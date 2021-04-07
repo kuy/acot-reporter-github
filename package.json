@@ -1,0 +1,26 @@
+{
+  "name": "acot-reporter-github",
+  "version": "0.0.0",
+  "description": "A GitHub reporter for acot",
+  "license": "MIT",
+  "author": "Yuki Kodama <endflow.net@gmail.com>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@acot/module-loader": "0.0.6",
+    "@acot/reporter": "0.0.7",
+    "debug": "^4.3.1"
+  },
+  "devDependencies": {
+    "@acot/tsconfig": "0.1.0",
+    "@acot/types": "0.0.7",
+    "@types/puppeteer-core": "^5.4.0",
+    "typescript": "4.2.3"
+  }
+}
