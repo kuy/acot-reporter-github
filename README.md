@@ -1,4 +1,4 @@
-# acot-reporter-github
+# WIP: acot-reporter-github
 
 A GitHub reporter for [acot](https://github.com/acot-a11y/acot).
 
