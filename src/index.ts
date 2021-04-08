@@ -16,7 +16,6 @@ const schema: Schema = {
       type: "string",
     },
   },
-  required: ["token"],
   additionalProperties: false,
 };
 
@@ -29,7 +28,7 @@ export default createReporterFactory<Options>((config) => async (runner) => {
   debug("received valid options:", config.options);
 
   const octokit = new Octokit({
-    auth: config.options.token,
+    auth: process.env.GITHUB_TOKEN || config.options.token,
   });
 
   const opts = {
