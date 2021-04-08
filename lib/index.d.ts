@@ -1,5 +1,2 @@
-declare type Options = {
-    token: string;
-};
-declare const _default: import("@acot/types").ReporterFactory<Options>;
+declare const _default: import("@acot/types").ReporterFactory<{}>;
 export default _default;

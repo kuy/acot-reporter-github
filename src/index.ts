@@ -1,34 +1,11 @@
 import { createReporterFactory } from "@acot/reporter";
-import type { Schema } from "@acot/schema-validator";
-import { validate } from "@acot/schema-validator";
 import { Octokit } from "@octokit/core";
 import { get_owner, get_repo_name, get_pr_number } from "./lib/github";
 const debug = require("debug")("kuy:reporter:github");
 
-type Options = {
-  token: string;
-};
-
-const schema: Schema = {
-  type: "object",
-  properties: {
-    token: {
-      type: "string",
-    },
-  },
-  additionalProperties: false,
-};
-
-export default createReporterFactory<Options>((config) => async (runner) => {
-  validate(schema, config.options, {
-    name: "GitHubReporter",
-    base: "options",
-  });
-
-  debug("received valid options:", config.options);
-
+export default createReporterFactory(() => async (runner) => {
   const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN || config.options.token,
+    auth: process.env.GITHUB_TOKEN,
   });
 
   const opts = {
@@ -41,7 +18,7 @@ export default createReporterFactory<Options>((config) => async (runner) => {
     "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
     {
       ...opts,
-      body: "STARTED",
+      body: "acot STARTED",
     }
   );
 
@@ -52,7 +29,7 @@ export default createReporterFactory<Options>((config) => async (runner) => {
       "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
       {
         ...opts,
-        body: "FINISHED",
+        body: "acot FINISHED",
       }
     );
   });
