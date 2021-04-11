@@ -3,9 +3,9 @@ export const get_pr_number = () => {
   return parse_pr_number(ref);
 };
 
-const PR_NUM_EXTRACTOR = /refs\/pull\/(\d+)\/merge/;
+const PR_NUMBER_EXTRACTOR = /refs\/pull\/(\d+)\/merge/;
 export const parse_pr_number = (ref: string) => {
-  const matched = ref.match(PR_NUM_EXTRACTOR);
+  const matched = ref.match(PR_NUMBER_EXTRACTOR);
   if (!matched) {
     throw new Error(`Unexpected ref pattern. ref=${ref}`);
   }

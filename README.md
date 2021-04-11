@@ -2,6 +2,13 @@
 
 A GitHub reporter for [acot](https://github.com/acot-a11y/acot).
 
+## TODOs for MVP
+
+- [ ] Show summarized result
+- [ ] Show detailed result (expandable)
+- [ ] CI (automated release)
+- [ ] Delete and ignore `lib` directory
+
 ## Usage
 
 ### Installation
