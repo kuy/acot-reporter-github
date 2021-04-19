@@ -16,35 +16,24 @@ export default createReporterFactory(() => async (runner) => {
     issue_number: get_pr_number(),
   };
 
-  await octokit.request(
-    "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
-    {
-      ...opts,
-      body: `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})`,
-    }
-  );
+  let body = `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})\n\n`;
 
   runner.on("audit:complete", async ([summary]) => {
     // Summarize by paths
-    let body = summary.results
-      .map((result) => {
-        return `${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}`;
-      })
-      .join("\n");
-    await octokit.request(
-      "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
-      {
-        ...opts,
-        body,
-      }
-    );
+    body +=
+      summary.results
+        .map((result) => {
+          return `${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}`;
+        })
+        .join("\n") + "\n\n";
 
     // Summarize by rules
-    body = Object.entries(summary.rules)
+    body += Object.entries(summary.rules)
       .map(([name, rule]) => {
         return `${name}:  :white_check_mark: ${rule.passCount}  :x: ${rule.errorCount}  :warning: ${rule.warningCount}`;
       })
       .join("\n");
+
     await octokit.request(
       "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
       {
