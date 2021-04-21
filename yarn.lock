@@ -659,6 +659,11 @@ log-update@^4.0.0:
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
 
+markdown-table-ts@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/markdown-table-ts/-/markdown-table-ts-1.0.3.tgz#46e4163805f1ca0b1076863b93996ba77436f990"
+  integrity sha512-lYrp7FXmBqpmGmsEF92WnSukdgYvLm15FPIODZOx9+3nobkxJxjBYcszqZf5VqTjBtISPSNC7zjU9o3zwpL6AQ==
+
 mimic-fn@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"

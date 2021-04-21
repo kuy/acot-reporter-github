@@ -1,5 +1,6 @@
 import { createReporterFactory } from "@acot/reporter";
 import { Octokit } from "@octokit/core";
+import { getMarkdownTable, Row } from "markdown-table-ts";
 import { get_owner, get_repo_name, get_pr_number } from "./lib/github";
 const debug = require("debug")("kuy:reporter:github");
 
@@ -16,23 +17,40 @@ export default createReporterFactory(() => async (runner) => {
     issue_number: get_pr_number(),
   };
 
-  let body = `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})\n\n`;
-
   runner.on("audit:complete", async ([summary]) => {
-    // Summarize by paths
-    body +=
-      summary.results
-        .map((result) => {
-          return `${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}`;
-        })
-        .join("\n") + "\n\n";
+    let body = `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})\n\n`;
 
-    // Summarize by rules
-    body += Object.entries(summary.rules)
-      .map(([name, rule]) => {
-        return `${name}:  :white_check_mark: ${rule.passCount}  :x: ${rule.errorCount}  :warning: ${rule.warningCount}`;
-      })
-      .join("\n");
+    // Expandable: See details
+    body += "<details>\n";
+    body += `<summary>See details</summary>\n`;
+
+    summary.results.forEach((result) => {
+      body += "<details>\n";
+      body += `<summary>${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n`;
+
+      const rows: Row[] = [];
+      for (const [id, stat] of Object.entries(result.rules)) {
+        rows.push([
+          id,
+          stat.passCount.toString(),
+          stat.errorCount.toString(),
+          stat.warningCount.toString(),
+          stat.duration.toString(),
+        ]);
+      }
+
+      const input = {
+        table: {
+          head: ["Rule", ":white_check_mark:", ":x:", ":warning:", "Duration"],
+          body: rows,
+        },
+      };
+      body += `\n\n${getMarkdownTable(input)}\n\n`;
+
+      body += "</details>\n";
+    });
+
+    body += "</details>";
 
     await octokit.request(
       "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",

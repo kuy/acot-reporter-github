@@ -17,7 +17,8 @@
     "@acot/reporter": "0.0.7",
     "@acot/schema-validator": "^0.0.5",
     "@octokit/core": "^3.4.0",
-    "debug": "^4.3.1"
+    "debug": "^4.3.1",
+    "markdown-table-ts": "^1.0.3"
   },
   "devDependencies": {
     "@acot/tsconfig": "0.1.0",
