@@ -23,12 +23,13 @@ export default createReporterFactory(() => async (runner) => {
 
     // Expandable: See details
     body += "<details>\n";
-    body += `<summary>See details</summary>\n`;
+    body += `<summary>See details</summary>\n\n`;
+    body += `#### Paths\n`;
 
     summary.results.forEach((result) => {
       body += "<details>\n";
-      body += `<summary>\`${result.url}\`:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n`;
-      body += `#### Rules`;
+      body += `<summary>${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n\n`;
+      body += `#### Rules\n`;
 
       const rows: Row[] = [];
       for (const [id, stat] of Object.entries(result.rules)) {
