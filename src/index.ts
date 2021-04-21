@@ -1,6 +1,7 @@
 import { createReporterFactory } from "@acot/reporter";
 import { Octokit } from "@octokit/core";
 import { getMarkdownTable, Row } from "markdown-table-ts";
+import ms from "pretty-ms";
 import { get_owner, get_repo_name, get_pr_number } from "./lib/github";
 const debug = require("debug")("kuy:reporter:github");
 
@@ -26,16 +27,17 @@ export default createReporterFactory(() => async (runner) => {
 
     summary.results.forEach((result) => {
       body += "<details>\n";
-      body += `<summary>${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n`;
+      body += `<summary>\`${result.url}\`:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n`;
+      body += `#### Rules`;
 
       const rows: Row[] = [];
       for (const [id, stat] of Object.entries(result.rules)) {
         rows.push([
-          id,
+          "`" + id + "`",
           stat.passCount.toString(),
           stat.errorCount.toString(),
           stat.warningCount.toString(),
-          stat.duration.toString(),
+          ms(stat.duration),
         ]);
       }
 
