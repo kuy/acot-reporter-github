@@ -22,14 +22,20 @@ export default createReporterFactory(() => async (runner) => {
     let body = `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})\n\n`;
 
     // Expandable: See details
-    body += "<details>\n";
-    body += `<summary>See details</summary>\n\n`;
-    body += `#### Summary by Path\n`;
+    let details = "<details>\n";
+    details += `<summary>See details</summary>\n\n`;
+    details += `#### Summary by Path\n`;
+
+    const stats = {
+      pass: 0,
+      error: 0,
+      warning: 0,
+    };
 
     summary.results.forEach((result) => {
-      body += "<details>\n";
-      body += `<summary>${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n\n`;
-      body += `#### Summary by Rule\n`;
+      details += "<details>\n";
+      details += `<summary>${result.url}:  :white_check_mark: ${result.passCount}  :x: ${result.errorCount}  :warning: ${result.warningCount}</summary>\n\n`;
+      details += `#### Summary by Rule\n`;
 
       const rows: Row[] = [];
       for (const [id, stat] of Object.entries(result.rules)) {
@@ -40,6 +46,10 @@ export default createReporterFactory(() => async (runner) => {
           stat.warningCount.toString(),
           ms(stat.duration),
         ]);
+
+        stats.pass += stat.passCount;
+        stats.error += stat.errorCount;
+        stats.warning += stat.warningCount;
       }
 
       const input = {
@@ -48,12 +58,15 @@ export default createReporterFactory(() => async (runner) => {
           body: rows,
         },
       };
-      body += `\n\n${getMarkdownTable(input)}\n\n`;
+      details += `\n\n${getMarkdownTable(input)}\n\n`;
 
-      body += "</details>\n";
+      details += "</details>\n";
     });
 
-    body += "</details>";
+    details += "</details>";
+
+    body += `<b>Results</b> :white_check_mark: ${stats.pass}   :x: ${stats.error}   :warning: ${stats.warning}\n\n`;
+    body += details;
 
     await octokit.request(
       "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
