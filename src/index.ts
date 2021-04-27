@@ -28,7 +28,6 @@ export default createReporterFactory(() => async (runner) => {
   );
 
   const commentId = res.data.id;
-  debug(`comment_id: ${commentId}`);
 
   runner.on("audit:complete", async ([summary]) => {
     // Expandable: See details
@@ -79,7 +78,7 @@ export default createReporterFactory(() => async (runner) => {
     body += details;
 
     await octokit.request(
-      "PATCH /repos/{owner}/{repo}/issues/{issue_number}/comments/{comment_id}",
+      "PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}",
       {
         ...opts,
         body,
