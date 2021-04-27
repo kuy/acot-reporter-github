@@ -28,6 +28,7 @@ export default createReporterFactory(() => async (runner) => {
   );
 
   const commentId = res.data.id;
+  debug(`comment_id: ${commentId}`);
 
   runner.on("audit:complete", async ([summary]) => {
     // Expandable: See details
