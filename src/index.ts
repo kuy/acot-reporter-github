@@ -18,9 +18,18 @@ export default createReporterFactory(() => async (runner) => {
     issue_number: get_pr_number(),
   };
 
-  runner.on("audit:complete", async ([summary]) => {
-    let body = `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})\n\n`;
+  let body = `Audit by acot (core: ${runner.version.core}, runner: ${runner.version.self})\n\n`;
+  const res = await octokit.request(
+    "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
+    {
+      ...opts,
+      body: body + "<b>Results:</b> `Running...`\n",
+    }
+  );
 
+  const commentId = res.data.id;
+
+  runner.on("audit:complete", async ([summary]) => {
     // Expandable: See details
     let details = "<details>\n";
     details += `<summary>See details</summary>\n\n`;
@@ -65,14 +74,15 @@ export default createReporterFactory(() => async (runner) => {
 
     details += "</details>";
 
-    body += `<b>Results</b> :white_check_mark: ${stats.pass}   :x: ${stats.error}   :warning: ${stats.warning}\n\n`;
+    body += `<b>Results:</b> :white_check_mark: ${stats.pass}   :x: ${stats.error}   :warning: ${stats.warning}\n\n`;
     body += details;
 
     await octokit.request(
-      "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
+      "PATCH /repos/{owner}/{repo}/issues/{issue_number}/comments/{comment_id}",
       {
         ...opts,
         body,
+        comment_id: commentId,
       }
     );
   });
